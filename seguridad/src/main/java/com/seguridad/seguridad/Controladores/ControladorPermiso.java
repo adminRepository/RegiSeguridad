@@ -1,9 +1,9 @@
-package tutorial.FUP.seguridad.Controladores;
+package com.seguridad.seguridad.Controladores;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import tutorial.FUP.seguridad.Modelos.Permiso;
-import tutorial.FUP.seguridad.Repositorios.RepositorioPermiso;
+import com.seguridad.seguridad.Modelos.Permiso;
+import com.seguridad.seguridad.Repositorios.RepositorioPermiso;
 
 import java.util.List;
 
