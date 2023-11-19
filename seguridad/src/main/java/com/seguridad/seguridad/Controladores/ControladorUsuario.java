@@ -7,6 +7,10 @@ import com.seguridad.seguridad.Repositorios.RepositorioUsuario;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+
+
 
 @CrossOrigin
 @RestController
@@ -56,6 +60,19 @@ public class ControladorUsuario {
             this.miRepositorioUsuario.delete(usuarioActual);
         }
     }
+    @PostMapping("/validar")
+    public Usuario validate(@RequestBody Usuario infoUsuario,final HttpServletResponse response) throws IOException {
+        Usuario usuarioActual = this.miRepositorioUsuario.getUserByEmail(infoUsuario.getCorreo());
+
+        if (usuarioActual != null && usuarioActual.getContrasena().equals(convertirSHA256(infoUsuario.getContrasena()))) {
+            usuarioActual.setContrasena("");
+            return usuarioActual;
+        } else {
+            response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
+            return null;
+        }
+    }
+
     public String convertirSHA256(String password) {
         MessageDigest md = null;
         try {
@@ -72,6 +89,8 @@ public class ControladorUsuario {
         }
         return sb.toString();
     }
+
+
 }
 
 
