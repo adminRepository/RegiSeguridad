@@ -1,9 +1,12 @@
 package com.seguridad.seguridad.Controladores;
+import com.seguridad.seguridad.Modelos.Rol;
+import com.seguridad.seguridad.Repositorios.RepositorioRol;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import com.seguridad.seguridad.Modelos.Usuario;
 import com.seguridad.seguridad.Repositorios.RepositorioUsuario;
+import com.seguridad.seguridad.Repositorios.RepositorioRol;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
@@ -18,6 +21,7 @@ import java.io.IOException;
 public class ControladorUsuario {
     @Autowired
     private RepositorioUsuario miRepositorioUsuario;
+    private RepositorioRol miRepositorioRol;
     @GetMapping("")
     public List<Usuario> index(){
         return this.miRepositorioUsuario.findAll();
@@ -69,6 +73,26 @@ public class ControladorUsuario {
             return usuarioActual;
         } else {
             response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
+            return null;
+        }
+    }
+
+    /** * Relación (1 a n) entre rol y usuario
+     * * @param id
+     * * @param id_rol
+     * * @return */
+    @PutMapping("{id}/rol/{id_rol}")
+    public Usuario asignarRolAUsuario(@PathVariable String id,@PathVariable String id_rol){
+        Usuario usuarioActual=this.miRepositorioUsuario
+                .findById(id)
+                .orElse(null);
+        Rol rolActual=this.miRepositorioRol
+                .findById(id_rol)
+                .orElse(null);
+        if (usuarioActual!=null && rolActual!=null){
+            usuarioActual.setRol(rolActual);
+            return this.miRepositorioUsuario.save(usuarioActual);
+        }else{
             return null;
         }
     }
